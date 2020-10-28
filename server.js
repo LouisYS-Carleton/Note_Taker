@@ -1,12 +1,16 @@
-// Set up dependencies
+const express = require("express")
+const path = require("path")
 
-// Set up express
+const app = express()
+const PORT = 3000
 
-// Prepare express for parsed data
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(express.static("public"));
 
-// Declare variables
+require('./Develop/routes/API')(app);
+require('./Develop/routes/HTML')(app);
 
-// Declare routes
 
 
 
