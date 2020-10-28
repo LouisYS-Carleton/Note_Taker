@@ -1,18 +1,11 @@
-const express = require("express")
-const path = require("path")
+// set up dependencies
+const express = require("express");
+const path = require("path");
+const fs = require('fs');
+const util = require('util');
 
-const app = express()
-const PORT = 3000
+// set up express / port number
+const app = express();
+const PORT = 3000;
 
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
-app.use(express.static("public"));
-
-require('./Develop/routes/route_api')(app);
-require('./Develop/routes/route_html')(app);
-
-app.listen(PORT, () => {
-    console.log('Application is listening on PORT ' + PORT)
-})
-
-
+// set up data parse (express)
