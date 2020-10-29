@@ -60,7 +60,6 @@ function addUserNote(newUserNotes, currentUserNotes) {
 };
 
 
-
 // app.delete (Delete notes)
 app.delete('/api/notes/:id', function(req, res) { 
     const assignedID = parseInt(req.params.assignedID);
@@ -80,7 +79,6 @@ function deleteUserNote(assignedID, currentUserNotes) {
     });
     currentUserNotes.splice(noteIndex, 1);
 };
-
 
 
 // Finalize user note
