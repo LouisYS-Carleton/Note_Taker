@@ -34,13 +34,10 @@ app.get("/api/notes", function (req, res) {
     })
 })
 
-
-
-
 // Set routes (app.post)
-// app.post("/api/notes", function (req, res) {
-//     let newUserNotes = req.body;
-//     readFileHTML(path.join(__dirname, "./Develop/db/db.json"), "utf8")
+app.post("/api/notes", function (req, res) {
+    let newUserNotes = req.body;
+    fs.readFile(path.join(__dirname, "./Develop/db/db.json"), "utf8")
 //     .then(function (data) {
 //         allUserNotes = JSON.parse(data);
 //         if (newUserNotes.id || newUserNotes.id === 0) {
