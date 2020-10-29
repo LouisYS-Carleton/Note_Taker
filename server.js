@@ -3,123 +3,97 @@ const express = require("express");
 const path = require("path");
 const fs = require('fs');
 
-// Set up express
+
+// Express
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Set up data parse (express)
+
+// Data parse (Express)
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "./Develop/public")));
 
+
 // Variables
 let allUserNotes = path.join(__dirname, "Develop", "db", "db.json");
-let idNumber = 1
+let idNumber = 1;
 
-// Set routes (app.get)
-    // default
+
+// Default HTML pages
 app.get("/", (req, res) => {
-    res.sendFile(path.join(__dirname, "./Develop/public/index.html"))
-})
+    res.sendFile(path.join(__dirname, "./Develop/public/index.html"));
+});
     
-    // notes
 app.get("/notes", (req, res) => {
-    res.sendFile(path.join(__dirname, "./Develop/public/notes.html"))
-})
+    res.sendFile(path.join(__dirname, "./Develop/public/notes.html"));
+});
 
-// Get routes (app.get)
+
+// app.get (Read stored notes)
 app.get("/api/notes", function (req, res) {
-    fs.readFile(allUserNotes, function(err, data){
-        const currentUserNotes = previousUserNotes(err, data)
-        res.json(currentUserNotes)
-    })
-})
+    fs.readFile(allUserNotes, (err, data) => {
+        const currentUserNotes = previousUserNotes(err, data);
+        res.json(currentUserNotes);
+    });
+});
 
-// Set routes (app.post)
+function previousUserNotes(err, data) {
+    if (err) throw (err);
+    return JSON.parse(data);
+};
+
+
+// app.post (Post new notes)
 app.post("/api/notes", function (req, res) {
     let newUserNotes = req.body;
     fs.readFile(allUserNotes, function(err, data) {
-        const currentUserNotes = previousUserNotes(err, data)
-        addUserNote(newUserNotes, currentUserNotes)
-        finalizeUserNote(currentUserNotes, res)
-    })
-})
-
-app.delete('/api/notes/:id', function(req, res) { 
-    const assignedID = parseInt(req.params.assignedID)
-    fs.readFile(allUserNotes, (err, data) => {
-        const currentUserNotes = previousUserNotes(err, data)
-        deleteUserNote(assignedID, currentUserNotes);
+        const currentUserNotes = previousUserNotes(err, data);
+        addUserNote(newUserNotes, currentUserNotes);
         finalizeUserNote(currentUserNotes, res);
-    })
-})
-
-// app.post used functions (finalizeUserNote, previousUserNotes, addUserNote, deleteUserNote)
-function finalizeUserNote(allUserNotesList, res) {
-    const allUserNotesJSON = JSON.stringify(allUserNotesList);
-    fs.writeFile(allUserNotes, allUserNotesJSON, function(err){
-      if (err) throw err;
-      res.json(allUserNotesList);
     });
-}
-
-function previousUserNotes(err, data) {
-    if (err) throw (err)
-    return JSON.parse(data)
-}
+});
 
 function addUserNote(newUserNotes, currentUserNotes) {
     newUserNotes.id = idNumber++
-    currentUserNotes.push(newUserNotes)
-}
+    currentUserNotes.push(newUserNotes);
+};
+
+
+
+// app.delete (Delete notes)
+app.delete('/api/notes/:id', function(req, res) { 
+    const assignedID = parseInt(req.params.assignedID);
+    fs.readFile(allUserNotes, (err, data) => {
+        const currentUserNotes = previousUserNotes(err, data);
+        deleteUserNote(assignedID, currentUserNotes);
+        finalizeUserNote(currentUserNotes, res);
+    });
+});
 
 function deleteUserNote(assignedID, currentUserNotes) {
     let noteIndex;
-    currentUserNotes.forEach(function(note, index){
+    currentUserNotes.forEach((note, index) => {
       if (note.assignedID === assignedID) {
         noteIndex = index;
-      }
+      };
     });
     currentUserNotes.splice(noteIndex, 1);
-  }
+};
 
-// Delete (app.delete)
 
-// DELETE API notes route
-// app.delete("./Develop/api/notes/:id", function (req, res) {
-//     const { id } = req.params;
-//     fs.readFile("./Develop/db/db.json", "utf8", (error, data) => {
-//       if (error) throw error;
-//       // Get the current notes in db.json.
-//       let allUserNotes = JSON.parse(data);
-//       // Filter the array not to include the id we want to delete.
-//       allUserNotes = allUserNotes.filter((item) => item.id !== id);
-//       // Update the db.json with new array in string format
-//       fs.writeFile("./Develop/db/db.json", JSON.stringify(allUserNotes), (err) => {
-//         if (err) throw err;
-//         res.send("Note deleted.");
-//       });
-//     });
-//   });
 
-  
+// Finalize user note
+function finalizeUserNote(allUserNotesList, res) {
+    const allUserNotesJSON = JSON.stringify(allUserNotesList);
+    fs.writeFile(allUserNotes, allUserNotesJSON, function(err) {
+      if (err) throw err;
+      res.json(allUserNotesList);
+    });
+};
 
-// app.delete("/api/notes/:id", function (req, res) {
-//     const { id } = req.params;
-//     fs.readFile("db/db.json", "utf8", (error, data) => {
-//       if (error) throw error;
-//       // Get the current notes in db.json.
-//       let allUserNotes = JSON.parse(data);
-//       // Filter the array not to include the id we want to delete.
-//       allUserNotes = allUserNotes.filter((item) => item.id !== id);
-//       // Update the db.json with new array in string format
-//       fs.writeFile("db/db.json", JSON.stringify(allNotes), (err) => {
-//         if (err) throw err;
-//         res.send("Note deleted.");
-//       });
-//     });
-//   });
 
+// App port listener
 app.listen(PORT, () => {
-    console.log("App is listening on PORT " + PORT)
-})
+    console.log("App is listening on PORT " + PORT);
+});
