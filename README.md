@@ -1,6 +1,9 @@
 # Note Taker
 An app to help keep track of your personal notes. Allows the user to add, delete, and view any memos added.
 
+## Deployed App on Heroku
+https://note-taker-carletonu.herokuapp.com/
+
 <img src="./README_pictures/terminal.png" alt="Terminal prompts">
 <img src="./README_pictures/index.png" alt="Home page">
 <img src="./README_pictures/hellouser.png" alt="Note page">
