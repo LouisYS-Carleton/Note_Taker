@@ -28,7 +28,7 @@ app.get("/notes", (req, res) => {
 })
 
 app.get("/api/notes", function (req, res) {
-    fs.readFile(allUserNotes, function (err, data){
+    fs.readFile(allUserNotes, function(err, data){
         const currentUserNotes = previousUserNotes(err, data)
         res.json(currentUserNotes)
     })
@@ -37,7 +37,13 @@ app.get("/api/notes", function (req, res) {
 // Set routes (app.post)
 app.post("/api/notes", function (req, res) {
     let newUserNotes = req.body;
-    fs.readFile(path.join(__dirname, "./Develop/db/db.json"), "utf8")
+    fs.readFile(allUserNotes, function(err, data) {
+        const currentUserNotes = previousUserNotes(err, data)
+        addUserNote(newUserNotes)
+        finalizeUserNote(currentUserNotes, res)
+    })
+})
+
 //     .then(function (data) {
 //         allUserNotes = JSON.parse(data);
 //         if (newUserNotes.id || newUserNotes.id === 0) {
